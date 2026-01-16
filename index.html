@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Cyber Opsource — Tools</title>
+  <meta name="description" content="Privacy-first, client-side utility tools. No uploads. No tracking." />
+  <meta property="og:title" content="Cyber Op Source — Privacy-First Security Tools" />
+  <meta property="og:description" content="Free, browser-based tools for SMB security. No data collection." />
+  <meta property="og:image" content="https://cyberopsource.tools/og-image.jpg" />
+  <meta property="og:url" content="https://cyberopsource.tools/" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <!-- Basic CSP starter (adjust if you add external assets) -->
+  <meta http-equiv="Content-Security-Policy"
+          content="default-src 'self' https://cyberopsource.com https://mobiledocform.com; 
+                   img-src 'self' data: https://cyberopsource.com https://mobiledocform.com; 
+                   style-src 'self' 'unsafe-inline' https://cyberopsource.tools; 
+                   script-src 'self'; 
+                   base-uri 'self'; 
+                   form-action 'self' https://mobiledocform.com; 
+                   frame-ancestors 'none'">
+
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+
+<body>
+<header>
+  <div class="wrap">
+    <div class="nav">
+		<a class="brand" href="/">
+		  <img src="logo.jpg" alt="Cyber Opsource Logo" class="logo">
+		  <div>Cyber Op Source</div>
+		</a>
+      <nav class="navlinks" aria-label="Primary">
+        <a href="/" >Home</a>
+        <a href="/about.html">About Us</a>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <h1>Open-Source Intelligence &<br/>Utility Tools</h1>
+    <p>
+      Privacy-first tools that run entirely in your browser.
+      <strong>No uploads.</strong> <strong>No tracking.</strong> Source available on GitHub.
+    </p>
+
+    <div class="controls">
+      <div class="search" role="search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M10.5 19a8.5 8.5 0 1 1 0-17 8.5 8.5 0 0 1 0 17Z" stroke="currentColor" stroke-width="2"/>
+          <path d="M16.5 16.5 21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <input id="searchInput" type="search" placeholder="Find a tool..." autocomplete="off" />
+      </div>
+
+      <div class="tabs" role="tablist" aria-label="Tool categories">
+        <button class="tab active" data-cat="All" role="tab" aria-selected="true">All</button>
+        <button class="tab" data-cat="Security" role="tab">Security</button>
+        <button class="tab" data-cat="Formatting" role="tab">Formatting</button>
+        <button class="tab" data-cat="Networking" role="tab">Networking</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<main>
+  <div class="wrap">
+    <section id="grid" class="grid" aria-label="Tools grid"></section>
+    <div id="empty" class="empty">
+      No tools match your search/filter. Try clearing the search or selecting “All”.
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <div style="display:flex; gap:18px; flex-wrap:wrap;">
+        <a href="/privacy">Privacy Policy</a>
+        <a href="/terms">Terms of Service</a>
+        <a href="https://github.com/your-org/your-repo" target="_blank" rel="noopener">GitHub Repository</a>
+      </div>
+      <div class="small">© <span id="year"></span> Cyber Opsource</div>
+    </div>
+  </div>
+</footer>
+
+<script src="js/tools.js" defer></script>
+
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure IP Subnet Calculator — Cyber Op Source</title>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https://img1.wsimg.com; style-src 'self' 'unsafe-inline' https://cyberopsource.tools; script-src 'self' https://img1.wsimg.com 'sha256-OnVPZgTEdPDh0Ggv3F37fRCWxlM/997Ps8aws7VX4vM='; connect-src 'self' https://csp.secureserver.net; base-uri 'self';">
+    <link rel="stylesheet" href="../../css/styles.css" />
+    <style>
+        :root {
+            --bg-deep: #0f172a;
+            --bg-card: #1e293b;
+            --accent: #38bdf8;
+            --text-main: #f1f5f9;
+            --text-dim: #94a3b8;
+            --border: #334155;
+            --success: #22c55e;
+        }
+        .site-nav { position: fixed; top: 0; width: 100%; background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); z-index: 1000; }
+        .nav-wrap { max-width: 1100px; margin: 0 auto; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
+        .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text-main); font-weight: 700; }
+        .nav-links a { margin-left: 20px; text-decoration: none; color: var(--text-dim); font-size: 0.9rem; transition: 0.2s; }
+        .nav-links a:hover { color: var(--accent); }
+        
+        .tool-card { background: var(--bg-card); width: 95%; max-width: 900px; padding: 40px; border-radius: 16px; border: 1px solid var(--border); margin: 60px auto; }
+        body{padding-top:60px}
+
+        .security-monitor { display: flex; gap: 20px; background: #0f172a; padding: 10px 20px; border-radius: 50px; border: 1px solid var(--border); margin-bottom: 30px; width: fit-content; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; }
+        .monitor-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); box-shadow: 0 0 8px var(--success); }
+
+        .input-group { display: grid; grid-template-columns: 2fr 1fr; gap: 15px; margin-bottom: 30px; }
+        input, select { background: #0f172a; border: 1px solid var(--border); color: var(--text-main); padding: 12px; border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 1rem; }
+
+        .results-table { width: 100%; border-collapse: collapse; margin-top: 20px; background: #0b1120; border-radius: 8px; overflow: hidden; }
+        .results-table td { padding: 15px; border-bottom: 1px solid var(--border); font-family: 'JetBrains Mono', monospace; }
+        .results-table td:first-child { color: var(--text-dim); width: 40%; font-weight: 600; font-size: 0.8rem; text-transform: uppercase; }
+        .results-table td:last-child { color: var(--accent); font-size: 1.1rem; }
+
+        .label { display: block; margin-bottom: 8px; font-size: 0.75rem; font-weight: 700; color: var(--text-dim); text-transform: uppercase; }
+    </style>
+</head>
+<body>
+    <header class="site-nav">
+        <div class="nav-wrap">
+            <a href="/" class="nav-logo">
+                <img src="https://cyberopsource.tools/logo.jpg" alt="Logo" style="height:30px; border-radius: 4px;">
+                <span>Cyber Op Source</span>
+            </a>
+            <div class="nav-links"><a href="/">Tools</a><a href="/about.html">About</a></div>
+        </div>
+    </header>
+
+<div class="tool-card">
+    <div class="security-monitor">
+        <div style="display:flex; align-items:center; gap:8px;">
+            <span class="monitor-dot"></span>
+            <span style="color:var(--text-dim)">Status:</span>
+            <span style="color:var(--success)">Local-Only</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px;">
+            <span style="color:var(--text-dim)">Egress:</span>
+            <span id="egressCount" style="color:var(--accent)">0 Authorized</span>
+        </div>
+    </div>
+
+    <div class="header-section">
+        <h1>IP Subnet Calculator</h1>
+        <p>Determine network boundaries, usable hosts, and CIDR notation for IPv4 architectures.</p>
+    </div>
+
+    <div class="input-group">
+        <div>
+            <label class="label">IP Address</label>
+            <input type="text" id="ipInput" placeholder="192.168.1.1" value="192.168.1.1">
+        </div>
+        <div>
+            <label class="label">Subnet Mask / CIDR</label>
+            <select id="cidrInput">
+                </select>
+        </div>
+    </div>
+
+    <table class="results-table">
+        <tr><td>Network Address</td><td id="resNetwork">-</td></tr>
+        <tr><td>Broadcast Address</td><td id="resBroadcast">-</td></tr>
+        <tr><td>Usable Host Range</td><td id="resRange">-</td></tr>
+        <tr><td>Total Usable Hosts</td><td id="resHosts">-</td></tr>
+        <tr><td>Subnet Mask</td><td id="resMask">-</td></tr>
+        <tr><td>Wildcard Mask</td><td id="resWildcard">-</td></tr>
+    </table>
+</div>
+
+<section class="tool-info">
+  <div class="wrap">
+    <div class="info-grid">
+      <div class="info-header" style="text-align: center; margin-bottom: 40px;">
+        <h2 style="color: var(--accent); font-size: 2rem;">Why use our Subnet Calculator?</h2>
+      </div>
+      <div class="values-grid">
+        <div class="value-card">
+            <h3>🏗️ Network Planning</h3>
+            <p>Calculate VLAN boundaries for guest networks, IoT isolation, or server subnets accurately to prevent IP overlaps.</p>
+        </div>
+        <div class="value-card">
+            <h3>🔐 Internal Privacy</h3>
+            <p>Avoid leaking your internal IP structure to public search history. All calculations are performed in your local browser memory.</p>
+        </div>
+        <div class="value-card">
+            <h3>📝 ACL Ready</h3>
+            <p>Get wildcard masks instantly—essential for writing Cisco or Fortinet Access Control Lists (ACLs) and firewall rules.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <div style="display:flex; gap:18px; flex-wrap:wrap;"><a href="/privacy">Privacy Policy</a><a href="/terms">Terms of Service</a></div>
+      <div class="small">© <span id="year"></span> Cyber Op Source</div>
+    </div>
+  </div>
+</footer>
+<script src="../../js/common.js"></script>
+<script src="subnet-calculator.js"></script>
+</body>
+</html>

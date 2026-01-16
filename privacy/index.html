@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacy Policy — Cyber Op Source</title>
+
+  <meta property="og:title" content="Cyber Op Source — Privacy Policy" />
+  <meta property="og:description" content="Privacy-first tools. No data collection. Client-side processing." />
+  <meta property="og:image" content="https://cyberopsource.tools/og-image.jpg" />
+  <meta property="og:url" content="https://cyberopsource.tools/privacy" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self';
+                 img-src 'self' data: https://img1.wsimg.com https://cyberopsource.tools;
+                 style-src 'self' 'unsafe-inline' https://cyberopsource.tools;
+                 script-src 'self' https://img1.wsimg.com 'sha256-OnVPZgTEdPDh0Ggv3F37fRCWxlM/997Ps8aws7VX4vM=';
+                 connect-src 'self' https://csp.secureserver.net;
+                 base-uri 'self';">
+
+  <link rel="stylesheet" href="../../css/styles.css" />
+
+  <style>
+    :root {
+      --bg-deep: #0f172a;
+      --bg-card: #1e293b;
+      --accent: #38bdf8;
+      --accent-glow: rgba(56, 189, 248, 0.2);
+      --text-main: #f1f5f9;
+      --text-dim: #94a3b8;
+      --border: #334155;
+    }
+
+    body { background: var(--bg-deep); color: var(--text-main); }
+
+    .site-nav {
+      position: fixed;
+      top: 0; width: 100%;
+      background: rgba(15, 23, 42, 0.9);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      z-index: 1000;
+    }
+    .nav-wrap {
+      max-width: 1100px; margin: 0 auto;
+      padding: 15px 20px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text-main); font-weight: 700; }
+    .nav-links a { margin-left: 20px; text-decoration: none; color: var(--text-dim); font-size: 0.9rem; transition: 0.2s; }
+    .nav-links a:hover { color: var(--accent); }
+
+    .page {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 110px 20px 40px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    }
+
+    .hero {
+      border-left: 4px solid var(--accent);
+      padding-left: 16px;
+      margin-bottom: 18px;
+    }
+
+    .hero h1 { margin: 0 0 6px; font-size: 1.8rem; }
+    .muted { color: var(--text-dim); }
+    .pill {
+      display: inline-block;
+      margin-top: 10px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--accent);
+      background: var(--accent-glow);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      padding: 4px 10px;
+      border-radius: 999px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 18px;
+    }
+    @media (max-width: 820px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+
+    .mini {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+    }
+    .mini h3 { margin: 0 0 6px; font-size: 1rem; }
+    .mini p { margin: 0; color: var(--text-dim); line-height: 1.55; }
+
+    h2 {
+      margin-top: 22px;
+      font-size: 1.1rem;
+      letter-spacing: 0.2px;
+    }
+
+    ul { margin: 8px 0 0 18px; color: var(--text-dim); line-height: 1.6; }
+    code, .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+
+    .notice {
+      margin-top: 16px;
+      padding: 14px 14px;
+      border-radius: 12px;
+      border: 1px dashed rgba(56, 189, 248, 0.45);
+      background: rgba(56, 189, 248, 0.06);
+      color: var(--text-dim);
+    }
+
+    .divider {
+      height: 1px;
+      background: rgba(148, 163, 184, 0.18);
+      margin: 18px 0;
+    }
+
+    footer { margin-top: 34px; border-top: 1px solid rgba(148, 163, 184, 0.15); }
+    footer .wrap { max-width: 1100px; margin: 0 auto; padding: 18px 20px; }
+    footer a { color: var(--text-dim); text-decoration: none; }
+    footer a:hover { color: var(--accent); }
+    .foot { display:flex; justify-content: space-between; align-items:center; gap: 12px; flex-wrap: wrap; }
+    .small { color: var(--text-dim); font-size: 0.85rem; }
+  </style>
+</head>
+
+<body>
+  <header class="site-nav">
+    <div class="nav-wrap">
+      <a href="/" class="nav-logo">
+        <img src="https://cyberopsource.tools/logo.jpg" alt="Logo" style="height:30px; border-radius: 4px;">
+        <span>Cyber Op Source</span>
+      </a>
+      <div class="nav-links">
+        <a href="/">Tools</a>
+        <a href="/about.html">About</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="card">
+      <div class="hero">
+        <h1>Privacy Policy</h1>
+        <div class="muted">
+          CyberOpSource.tools is built to be safe to use with sensitive data. Most tools process your input locally in your browser.
+        </div>
+        <span class="pill">CLIENT-SIDE PROCESSING FIRST</span>
+      </div>
+
+      <div class="grid">
+        <div class="mini">
+          <h3>What we collect</h3>
+          <p><strong>We do not ask you to upload content</strong> to use our tools. We don’t run analytics pixels, ad trackers, or behavior profiling on purpose.</p>
+        </div>
+        <div class="mini">
+          <h3>What we don’t want</h3>
+          <p>We don’t want your logs, tokens, emails, screenshots, or documents. The site is designed so your content can stay on your machine.</p>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <h2>1) Local-first processing (how the tools work)</h2>
+      <p class="muted">
+        Many tools on this site run entirely in your browser using JavaScript. When a tool is “client-side,” your input is processed
+        on your device and is not sent to our servers.
+      </p>
+      <ul>
+        <li>Inputs you paste into tools are processed in memory on your device.</li>
+        <li>Outputs are generated locally and shown on-screen.</li>
+        <li>If a tool offers “Copy” or “Download,” that action happens locally using your browser’s built-in features.</li>
+      </ul>
+
+      <div class="notice">
+        <strong>Important:</strong> Your browser and device environment still matter.
+        If your device is compromised, or if you paste sensitive data into other sites/tools, we can’t protect you from that.
+      </div>
+
+      <h2>2) Server logs</h2>
+      <p class="muted">
+        Like most websites, our hosting provider may keep standard access logs (for example: request time, pages requested,
+        and IP address). These logs are typically used for security, reliability, and abuse prevention.
+      </p>
+      <ul>
+        <li>We do not intentionally use these logs to profile you.</li>
+        <li>We do not sell personal data.</li>
+        <li>We do not run third-party ad tracking.</li>
+      </ul>
+
+      <h2>3) Cookies</h2>
+      <p class="muted">
+        We aim to keep cookies minimal. If cookies are used, they are primarily for basic site functionality and security.
+      </p>
+
+      <h2>4) Third-party content and requests</h2>
+      <p class="muted">
+        Some assets may be served from trusted third-party domains used by our hosting environment (for example, images or security-related endpoints).
+        Your browser may connect to those domains when loading the site.
+      </p>
+      <ul>
+        <li>We do not embed ad networks or tracking pixels.</li>
+        <li>External links (like GitHub) are clearly labeled and open in a new tab.</li>
+      </ul>
+
+      <h2>5) Your responsibility (safe sharing)</h2>
+      <p class="muted">
+        Even with local-first tools, you should only share what you must. If you use tools like the PII Scrubber, review the output before sending it to anyone.
+      </p>
+      <ul>
+        <li>Don’t paste production secrets unless you absolutely need to.</li>
+        <li>Prefer redaction before sharing logs externally.</li>
+        <li>Verify outputs for your specific compliance requirements (HIPAA, FERPA, PCI, etc.).</li>
+      </ul>
+
+      <h2>6) Changes to this policy</h2>
+      <p class="muted">
+        We may update this Privacy Policy as tools evolve. When we do, we will update the “Last updated” date below.
+      </p>
+
+      <div class="divider"></div>
+
+      <p class="muted"><strong>Last updated:</strong> <span class="mono">January 16, 2026</span></p>
+      <p class="muted">
+        Questions? Reach out via the contact method listed on the <a href="/about.html">About</a> page.
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <div class="foot">
+        <div style="display:flex; gap:18px; flex-wrap:wrap;">
+          <a href="/privacy">Privacy Policy</a>
+          <a href="/terms">Terms of Service</a>
+          <a href="https://github.com/your-org/your-repo" target="_blank" rel="noopener">GitHub Repository</a>
+        </div>
+        <div class="small">© <span id="year"></span> Cyber Op Source</div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

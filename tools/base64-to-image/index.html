@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Base64 Tool — Cyber Opsource</title>
+	<meta property="og:title" content="Cyber Op Source — Privacy-First Security Tools" />
+	<meta property="og:description" content="Free, browser-based tools for SMB security. No data collection." />
+	<meta property="og:image" content="https://cyberopsource.tools/og-image.jpg" />
+	<meta property="og:url" content="https://cyberopsource.tools/" />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta http-equiv="Content-Security-Policy" 
+	      content="default-src 'self'; 
+	               img-src 'self' data:; 
+	               style-src 'self' 'unsafe-inline' https://cyberopsource.tools; 
+	               script-src 'self'; 
+	               base-uri 'self';">
+	<link rel="stylesheet" href="../../css/styles.css" />
+    <style>
+        :root {
+            --bg-deep: #0f172a;
+            --bg-card: #1e293b;
+            --accent: #38bdf8;
+            --accent-glow: rgba(56, 189, 248, 0.2);
+            --text-main: #f1f5f9;
+            --text-dim: #94a3b8;
+            --border: #334155;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            margin: 0;
+            display: flex;
+            flex-direction: column; /* Stack Nav, Content, Footer */
+            min-height: 100vh;
+            padding-top: 80px; /* Space for the fixed nav */
+        }
+
+        /* Navigation */
+        .site-nav {
+            position: fixed;
+            top: 0; width: 100%;
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+        }
+        .nav-wrap {
+            max-width: 1100px; margin: 0 auto;
+            padding: 15px 20px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text-main); font-weight: 700; }
+        .nav-links a { margin-left: 20px; text-decoration: none; color: var(--text-dim); font-size: 0.9rem; transition: 0.2s; }
+        .nav-links a:hover { color: var(--accent); }
+
+        /* Tool Card */
+        .tool-card {
+            background: var(--bg-card);
+            width: 90%;
+            max-width: 750px;
+            padding: 40px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            margin: 60px auto; /* Centered with breathing room */
+            flex-grow: 0; 
+        }
+
+        .header { text-align: left; margin-bottom: 30px; border-left: 4px solid var(--accent); padding-left: 20px; }
+        .header h1 { margin: 0; font-size: 1.6rem; letter-spacing: -0.025em; }
+        .header p { color: var(--text-dim); font-size: 0.9rem; margin-top: 5px; }
+
+        .field-group { margin-bottom: 25px; }
+        label { display: block; font-weight: 500; margin-bottom: 10px; font-size: 0.85rem; color: var(--accent); text-transform: uppercase; letter-spacing: 0.05em; }
+
+        textarea {
+            width: 100%;
+            height: 160px;
+            padding: 15px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 14px;
+            resize: vertical;
+            box-sizing: border-box;
+            background: #0f172a;
+            color: #38bdf8;
+        }
+
+        .actions { display: flex; gap: 12px; margin-bottom: 30px; }
+        button { padding: 12px 24px; border-radius: 6px; border: none; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .btn-primary { background: var(--accent); color: var(--bg-deep); }
+        .btn-clear { color: #f87171; background: transparent; margin-left: auto; }
+
+        .result-area { position: relative; }
+        .copy-btn {
+            position: absolute; top: -35px; right: 0;
+            font-size: 11px; background: var(--border); color: var(--text-main);
+            border: none; padding: 4px 10px; border-radius: 4px; cursor: pointer;
+        }
+
+        /* Footer */
+        .site-footer {
+            background: #0b1120;
+            padding: 60px 20px 30px;
+            margin-top: auto; /* Pushes footer to bottom */
+            border-top: 1px solid var(--border);
+        }
+        .footer-wrap { max-width: 1100px; margin: 0 auto; }
+        .footer-grid { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 30px; margin-bottom: 40px; }
+        .footer-links { display: flex; flex-direction: column; gap: 10px; }
+        .footer-links a { color: var(--text-dim); text-decoration: none; font-size: 0.9rem; }
+        .copyright { text-align: center; color: #475569; font-size: 0.8rem; border-top: 1px solid #1e293b; padding-top: 20px; }
+
+        @media (max-width: 600px) { .actions { flex-direction: column; } .btn-clear { margin-left: 0; } }
+    </style>
+</head>
+<body>
+
+<header class="site-nav">
+    <div class="nav-wrap">
+        <a href="/" class="nav-logo">
+            <img src="https://cyberopsource.tools/logo.jpg" alt="Logo" class="logo">
+            <span>Cyber Op Source</span>
+        </a>
+        <div class="nav-links">
+            <a href="/">Tools</a>
+            <a href="/about.html">About</a>
+            <a href="https://linkedin.com/groups/yourid" target="_blank">Community</a>
+        </div>
+    </div>
+</header>
+
+<div class="tool-card">
+    <div class="header">
+		<div class="security-monitor">
+		    <div class="monitor-item">
+		        <span class="monitor-dot pulse-green"></span>
+		        <span class="label">Status:</span>
+		        <span class="value">Local-Only</span>
+		    </div>
+		    <div class="monitor-item">
+		        <span class="label">Egress:</span>
+		        <span class="value" id="egressCount">0 Authorized</span>
+		    </div>
+		    <div class="monitor-item">
+		        <span class="label">Privacy:</span>
+		        <span class="value">In-Memory Only</span>
+		    </div>
+		</div>
+        <h1>Base64 / Secure Utility</h1>
+        <p>Cyber Opsource Privacy-First Toolkit</p>
+    </div>
+
+    <div class="field-group">
+        <label for="input">Input Data</label>
+        <textarea id="input" spellcheck="false" placeholder="Paste text here..."></textarea>
+    </div>
+
+    <div class="actions">
+        <button class="btn-primary" onclick="process('encode')">Encode</button>
+        <button class="btn-primary" onclick="process('decode')">Decode</button>
+        <button class="btn-clear" onclick="clearAll()">Clear All</button>
+    </div>
+
+    <div class="field-group result-area">
+        <label for="output">Output Result</label>
+        <button class="copy-btn" id="copyBtn" onclick="copyResult()">Copy Result</button>
+        <textarea id="output" readonly spellcheck="false" placeholder="Result..."></textarea>
+    </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <div style="display:flex; gap:18px; flex-wrap:wrap;">
+        <a href="/privacy">Privacy Policy</a>
+        <a href="/terms">Terms of Service</a>
+        <a href="https://github.com/your-org/your-repo" target="_blank" rel="noopener">GitHub Repository</a>
+      </div>
+      <div class="small">© <span id="year"></span> Cyber Opsource</div>
+    </div>
+  </div>
+</footer>
+<script src="../../js/common.js"></script>
+
+<script>
+    function process(type) {
+        const input = document.getElementById('input').value;
+        const output = document.getElementById('output');
+        if (!input) return;
+        try {
+            if (type === 'encode') {
+                const bytes = new TextEncoder().encode(input);
+                const binString = Array.from(bytes, (b) => String.fromCodePoint(b)).join("");
+                output.value = btoa(binString);
+            } else {
+                const binString = atob(input.trim());
+                const bytes = Uint8Array.from(binString, (m) => m.codePointAt(0));
+                output.value = new TextDecoder().decode(bytes);
+            }
+        } catch (e) {
+            output.value = "Error: Invalid Input.";
+        }
+    }
+    function clearAll() { document.getElementById('input').value = ''; document.getElementById('output').value = ''; }
+    function copyResult() {
+        const output = document.getElementById('output');
+        if (!output.value) return;
+        output.select();
+        document.execCommand('copy');
+        document.getElementById('copyBtn').innerText = "Copied!";
+        setTimeout(() => { document.getElementById('copyBtn').innerText = "Copy Result"; }, 2000);
+    }
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Base64 Encoder/Decoder",
+  "operatingSystem": "Windows, macOS, Linux, Android, iOS",
+  "applicationCategory": "SecurityApplication",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "featureList": "Client-side processing, Unicode support, No-tracking privacy"
+}
+</script>
+</body>
+</html>

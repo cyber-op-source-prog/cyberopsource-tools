@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure SHA-256 Hash Generator — Cyber Op Source</title>
+	<meta property="og:title" content="Cyber Op Source — SQL Architect Pro" />
+	<meta property="og:description" content="Design relational schemas with a dialect-smart generator. Supports Postgres, MySQL, and SQLite. Privacy-first, zero-server modeling." />
+	<meta property="og:image" content="https://cyberopsource.tools/og-sql-architect.jpg" />
+	<meta property="og:url" content="https://cyberopsource.tools/tools/sql-architect/" />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta http-equiv="Content-Security-Policy" 
+	      content="default-src 'self'; 
+	               img-src 'self' data: https://img1.wsimg.com;
+	               style-src 'self' 'unsafe-inline' https://cyberopsource.tools; 
+	               script-src 'self' 'unsafe-inline' https://img1.wsimg.com;
+	               connect-src 'self' https://csp.secureserver.net;
+	               base-uri 'self';
+	               /* Allow JSON/Blob downloads */
+	               anchor-src 'self' blob:;
+	               font-src 'self' data:;
+	               /* Ensure Blob URIs are valid for the session */
+	               worker-src 'self' blob:;">
+	<link rel="stylesheet" href="../../css/styles.css" />
+    <style>
+        :root {
+            --bg-deep: #0f172a;
+            --bg-card: #1e293b;
+            --accent: #38bdf8;
+            --accent-glow: rgba(56, 189, 248, 0.2);
+            --text-main: #f1f5f9;
+            --text-dim: #94a3b8;
+            --border: #334155;
+        }
+
+		.site-nav {
+		    position: fixed;
+		    top: 0; width: 100%;
+		    background: rgba(15, 23, 42, 0.9);
+		    backdrop-filter: blur(10px);
+		    border-bottom: 1px solid var(--border);
+		    z-index: 1000;
+		}
+		.nav-wrap {
+		    max-width: 1100px; margin: 0 auto;
+		    padding: 15px 20px;
+		    display: flex; justify-content: space-between; align-items: center;
+		}
+		.nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text-main); font-weight: 700; }
+		.nav-links a { margin-left: 20px; text-decoration: none; color: var(--text-dim); font-size: 0.9rem; transition: 0.2s; }
+		.nav-links a:hover { color: var(--accent); }
+
+        .tool-card {
+            background: var(--bg-card);
+            width: 90%;
+            max-width: 800px;
+            padding: 40px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            margin: 60px auto;
+        }
+
+        .header-section { text-align: left; margin-bottom: 30px; border-left: 4px solid var(--accent); padding-left: 20px; }
+        
+        textarea {
+            width: 100%;
+            height: 120px;
+            padding: 15px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            background: #0f172a;
+            color: var(--text-main);
+            resize: vertical;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        .hash-output-container {
+            margin-top: 30px;
+            background: #0b1120;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            position: relative;
+        }
+
+        .hash-display {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--accent);
+            word-break: break-all;
+            font-size: 1.1rem;
+            margin-top: 10px;
+            min-height: 1.5em;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--border);
+            color: var(--text-main);
+            border: none;
+            padding: 5px 12px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+
+        .copy-btn:hover { background: var(--accent); color: var(--bg-deep); }
+
+        .label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-dim); letter-spacing: 0.05em; }
+    </style>
+</head>
+<body>
+
+<header class="site-nav">
+    <div class="nav-wrap">
+        <a href="/" class="nav-logo">
+            <img src="https://cyberopsource.tools/logo.jpg" alt="Logo" style="height:30px; border-radius: 4px;">
+            <span>Cyber Op Source</span>
+        </a>
+        <div class="nav-links">
+            <a href="/">Tools</a>
+            <a href="/about.html">About</a>
+        </div>
+    </div>
+</header>
+
+
+<div class="tool-card">
+    <div class="header-section">
+		<div class="security-monitor">
+		    <div class="monitor-item">
+		        <span class="monitor-dot pulse-green"></span>
+		        <span class="label">Status:</span>
+		        <span class="value">Local-Only</span>
+		    </div>
+		    <div class="monitor-item">
+		        <span class="label">Egress:</span>
+		        <span class="value" id="egressCount">0 Authorized</span>
+		    </div>
+		    <div class="monitor-item">
+		        <span class="label">Privacy:</span>
+		        <span class="value">In-Memory Only</span>
+		    </div>
+		</div>
+        <h1>SHA-256 Hash Generator</h1>
+        <p>Generate a cryptographically secure hash locally. Ideal for verifying file integrity or string comparisons.</p>
+    </div>
+	
+    <label class="label" for="textInput">Input String</label>
+    <textarea id="textInput" placeholder="Enter text to hash..." ></textarea>
+	<div style="margin-top: 30px; padding-top: 20px; border-top: 1px dashed var(--border);">
+		    <label class="label" for="fileInput">Or Hash a File</label>
+		    <div class="file-upload-wrapper" style="margin-top: 10px;">
+		        <input type="file" id="fileInput" style="color: var(--text-dim);">
+		    </div>
+		</div>
+    <div class="hash-output-container">
+        <span class="label">SHA-256 Hash Value</span>
+        <button class="copy-btn" id="copyBtn">Copy</button>
+        <div id="hashOutput" class="hash-display">...</div>
+    </div>
+</div>
+<section class="tool-info">
+  <div class="wrap">
+    <div class="info-grid">
+      <div class="info-header" style="text-align: center; margin-bottom: 40px;">
+        <h2 style="color: var(--accent); font-size: 2rem; margin-bottom: 10px;">Why "Cyber Op Source" Approved?</h2>
+        <p style="color: var(--text-dim);">Cryptographic integrity without the privacy risk.</p>
+      </div>
+      
+	  <div class="values-grid">
+	      <div class="value-card">
+	          <h3>🔒 Zero-Trust Privacy</h3>
+	          <p>Unlike cloud-based AI redactors, this tool is <strong>100% local</strong>. Processing happens entirely in your browser's memory. Your sensitive logs and emails are never sent to a server or used for AI training.</p>
+	      </div>
+	      
+	      <div class="value-card">
+	          <h3>🛡️ Liability Reduction</h3>
+	          <p>Protect your business from accidental data leaks. Use this tool to <strong>sanitize technical logs</strong> before sharing them with developers or vendors, ensuring you stay compliant with GDPR, HIPAA, and SOC2.</p>
+	      </div>
+	      
+	      <div class="value-card">
+	          <h3>⚡ Deterministic Accuracy</h3>
+	          <p>By using a high-performance <strong>Pattern Matching Engine</strong>, our scrubber provides consistent, rule-based redaction that doesn't "hallucinate." It handles large datasets instantly with a <strong>Zero-Footprint</strong> approach.</p>
+	      </div>
+	  </div>
+    </div>
+  </div>
+</section>
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <div style="display:flex; gap:18px; flex-wrap:wrap;">
+        <a href="/privacy">Privacy Policy</a>
+        <a href="/terms">Terms of Service</a>
+        <a href="https://github.com/your-org/your-repo" target="_blank" rel="noopener">GitHub Repository</a>
+      </div>
+      <div class="small">© <span id="year"></span> Cyber Op Source</div>
+    </div>
+  </div>
+</footer>
+<script src="sha256.js"></script>
+<script src="../../js/common.js"></script>
+</body>
+</html>

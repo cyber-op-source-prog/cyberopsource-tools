@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL Architect Pro — Cyber Op Source</title>
+	<meta property="og:title" content="Cyber Op Source — SQL Architect Pro" />
+	<meta property="og:description" content="Design relational schemas with a dialect-smart generator. Supports Postgres, MySQL, and SQLite. Privacy-first, zero-server modeling." />
+	<meta property="og:image" content="https://cyberopsource.tools/og-sql-architect.jpg" />
+	<meta property="og:url" content="https://cyberopsource.tools/tools/sql-architect/" />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta http-equiv="Content-Security-Policy" 
+	      content="default-src 'self'; 
+	               img-src 'self' data: https://img1.wsimg.com;
+	               style-src 'self' 'unsafe-inline' https://cyberopsource.tools; 
+	               script-src 'self' 'unsafe-inline' https://img1.wsimg.com;
+	               connect-src 'self' https://csp.secureserver.net;
+	               base-uri 'self';
+	               /* Allow JSON/Blob downloads */
+	               anchor-src 'self' blob:;
+	               font-src 'self' data:;
+	               /* Ensure Blob URIs are valid for the session */
+	               worker-src 'self' blob:;">
+	<link rel="stylesheet" href="../../css/styles.css" />
+    <style>
+		:root {
+		            --bg-deep: #0f172a; --bg-card: #1e293b; --accent: #38bdf8;
+		            --accent-glow: rgba(56, 189, 248, 0.2); --text-main: #f1f5f9;
+		            --text-dim: #94a3b8; --border: #334155; --danger: #f87171; --warning: #fbbf24;
+		            --sidebar-w: 240px;
+		        }
+
+		        /* --- Global Layout --- */
+				body {
+				    display: flex;
+				    height: 100vh;
+				    overflow: hidden;
+				    padding-top: 60px; 
+				}
+
+		        .site-nav {
+		            position: fixed;
+		            top: 0; width: 100%;
+		            background: rgba(15, 23, 42, 0.9);
+		            backdrop-filter: blur(10px);
+		            border-bottom: 1px solid var(--border);
+		            z-index: 1000;
+		        }
+		        .nav-wrap {
+		            max-width: 1100px; margin: 0 auto;
+		            padding: 15px 20px;
+		            display: flex; justify-content: space-between; align-items: center;
+		        }
+		        .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text-main); font-weight: 700; }
+		        .nav-links a { margin-left: 20px; text-decoration: none; color: var(--text-dim); font-size: 0.9rem; transition: 0.2s; }
+		        .nav-links a:hover { color: var(--accent); }
+
+		        /* --- Sidebar Styles --- */
+		        .sidebar {
+		            width: var(--sidebar-w); background: #0b1120; border-right: 1px solid var(--border);
+		            display: flex; flex-direction: column; padding: 20px; flex-shrink: 0;
+		        }
+		        .sidebar-header { font-weight: bold; color: var(--accent); font-size: 0.8rem; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; }
+		        .table-list { flex-grow: 1; overflow-y: auto; list-style: none; padding: 0; margin: 0; }
+		        .table-item { 
+		            padding: 10px; border-radius: 6px; cursor: pointer; color: var(--text-dim); 
+		            display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;
+		        }
+		        .table-item:hover { background: rgba(255,255,255,0.05); color: white; }
+		        .table-item.active { background: var(--accent-glow); color: var(--accent); border: 1px solid var(--accent); }
+		        .btn-new-table { background: var(--accent); color: var(--bg-deep); border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+
+		        /* --- Main Content & Sticky Footer Logic --- */
+		        .main-content {
+		            flex-grow: 1;
+		            display: flex;
+		            flex-direction: column; 
+		            height: calc(100vh - 60px);
+		            overflow-y: auto;
+		        }
+
+		        .content-body {
+		            flex: 1 0 auto; /* This grows to push the footer down */
+		            padding: 40px;
+		        }
+
+		        .tool-card { max-width: 1000px; margin: 0 auto; background: var(--bg-card); padding: 30px; border-radius: 12px; border: 1px solid var(--border); }
+
+		        /* --- Form Elements --- */
+		        .config-header { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+		        input, select { background: #0f172a; border: 1px solid var(--border); color: white; padding: 10px; border-radius: 6px; width: 100%; outline: none; }
+		        input:focus { border-color: var(--accent); }
+
+		        .template-bar { margin-bottom: 20px; display: flex; gap: 10px; align-items: center; }
+		        .btn-sm { padding: 4px 12px; font-size: 0.75rem; background: #334155; color: white; border: 1px solid var(--border); border-radius: 4px; cursor: pointer; }
+		        
+		        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 0.85rem; }
+		        th { text-align: left; padding: 12px; border-bottom: 2px solid var(--border); color: var(--accent); }
+		        td { padding: 8px; border-bottom: 1px solid var(--border); }
+
+		        .btn { padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; border: none; transition: 0.2s; }
+		        .btn-add { background: var(--accent); color: var(--bg-deep); }
+		        .btn-copy { background: #334155; color: white; margin-top: 10px; width: 100%; }
+		        .btn-danger { background: transparent; color: var(--danger); border: 1px solid var(--danger); padding: 5px 10px; cursor: pointer; }
+
+		        .output-pane { background: #0b1120; border: 1px solid var(--border); padding: 20px; border-radius: 8px; font-family: monospace; white-space: pre-wrap; margin-top: 20px; color: #a5f3fc; border-left: 4px solid var(--accent); }
+		        #lintMessages { padding: 10px; border-radius: 6px; background: rgba(251, 191, 36, 0.1); color: var(--warning); font-size: 0.85rem; margin-bottom: 15px; display: none; }
+		        .checkbox-cell { text-align: center; }
+		        .small-input { width: 60px; }
+
+		        /* --- Footer --- */
+				.content-grow {
+				    flex: 1 0 auto; /* The '1' tells it to take up all available space */
+				    padding: 40px;
+				}
+		        footer {
+		            flex-shrink: 0;
+		            background: #0b1120;
+		            border-top: 1px solid var(--border);
+		            padding: 20px 40px;
+		            color: var(--text-dim);
+		        }
+		        .foot {
+		            max-width: 1000px;
+		            margin: 0 auto;
+		            display: flex;
+		            justify-content: space-between;
+		            align-items: center;
+		            font-size: 0.85rem;
+		        }
+    </style>
+</head>
+<body>
+	<header class="site-nav">
+	    <div class="nav-wrap">
+	        <a href="/" class="nav-logo">
+	            <img src="https://cyberopsource.tools/logo.jpg" alt="Logo" style="height:30px; border-radius: 4px;">
+	            <span>Cyber Op Source</span>
+	        </a>
+	        <div class="nav-links">
+	            <a href="/">Tools</a>
+	            <a href="/about.html">About</a>
+	        </div>
+	    </div>
+	</header>
+<aside class="sidebar">
+    <div class="sidebar-header">Data Objects</div>
+    <ul class="table-list" id="sidebarList"></ul>
+    <button class="btn-new-table" onclick="createNewTable()">+ New Table</button>
+    
+    <div style="margin-top: 20px; border-top: 1px solid var(--border); padding-top: 20px;">
+        <button class="btn-sm" style="width:100%; margin-bottom: 10px;" onclick="exportJSON()">💾 Save Design (JSON)</button>
+        <label class="btn-sm" style="cursor:pointer; display: block; text-align: center;">
+            📂 Load Design <input type="file" id="importFile" hidden onchange="importJSON(event)">
+        </label>
+    </div>
+</aside>
+
+<main class="main-content">
+	<div class="content-grow">
+    <div class="tool-card">
+        <div style="border-left: 4px solid var(--accent); padding-left: 15px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <h1 style="margin:0;">SQL Architect Pro</h1>
+                <p style="margin:5px 0; color: var(--text-dim);">Relational Modeler Mode</p>
+            </div>
+            <button class="btn btn-sm" onclick="generateGlobalSQL()" style="background: var(--accent-glow); color: var(--accent); border: 1px solid var(--accent);">
+                ⚡ View Full Schema SQL
+            </button>
+        </div>
+        <div class="template-bar">
+            <span style="font-size: 0.75rem; color: var(--text-dim); font-weight: bold;">TEMPLATES:</span>
+            <button class="btn-sm" onclick="applyTemplate('users')">Users</button>
+            <button class="btn-sm" onclick="applyTemplate('orders')">Orders</button>
+            <button class="btn-sm" onclick="applyTemplate('audit_log')">Audit Log</button>
+        </div>
+
+        <div class="config-header">
+            <div>
+                <label style="font-size: 0.75rem;">TABLE NAME</label>
+                <input type="text" id="tableName" oninput="updateTableName(this.value)">
+            </div>
+            <div>
+                <label style="font-size: 0.75rem;">DIALECT</label>
+                <select id="dialect" onchange="generateSQL()">
+                    <option value="postgres">PostgreSQL</option>
+                    <option value="mysql">MySQL</option>
+                    <option value="sqlite">SQLite</option>
+                    <option value="mssql">SQL Server</option>
+                </select>
+            </div>
+            <div style="display: flex; align-items: flex-end; padding-bottom: 10px;">
+                <label style="font-size: 0.85rem; cursor: pointer;">
+                    <input type="checkbox" id="bestPractices" onchange="generateSQL()"> Best Practices
+                </label>
+            </div>
+        </div>
+
+        <div id="lintMessages"></div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th><th>Type</th><th>Len</th><th title="PK">PK</th><th title="Not Null">NN</th><th>Default</th><th></th>
+                </tr>
+            </thead>
+            <tbody id="colBody"></tbody>
+        </table>
+
+        <button class="btn btn-add" onclick="addRow()">+ Add Column</button>
+        <div class="output-pane" id="sqlOutput"></div>
+        <button class="btn btn-copy" onclick="copySQL()">Copy SQL</button>
+    </div>
+	</div>
+	<footer>
+	        <div class="foot">
+	            <div style="display:flex; gap:18px;">
+	                <a href="/privacy" style="text-decoration:none; color:inherit;">Privacy</a>
+	                <a href="/terms" style="text-decoration:none; color:inherit;">Terms</a>
+	                <a href="https://github.com" style="text-decoration:none; color:inherit;">GitHub</a>
+	            </div>
+	            <div class="small">© <span id="year"></span> Cyber Op Source</div>
+	        </div>
+	    </footer>
+</main>
+
+<script>
+    // State management
+    let state = {
+        activeTableIndex: 0,
+        dialect: 'postgres',
+        bestPractices: false,
+        tables: [
+            {
+                name: 'users',
+                columns: [
+                    { name: 'id', type: 'id', length: '', pk: true, nn: true, def: '' },
+                    { name: 'email', type: 'varchar', length: '255', pk: false, nn: true, def: '' }
+                ]
+            }
+        ]
+    };
+
+    const typeMap = {
+        postgres: { id: 'GENERATED BY DEFAULT AS IDENTITY', varchar: 'VARCHAR', timestamp: 'TIMESTAMPTZ', json: 'JSONB', boolean: 'BOOLEAN' },
+        mysql: { id: 'INT AUTO_INCREMENT', varchar: 'VARCHAR', timestamp: 'TIMESTAMP', json: 'JSON', boolean: 'TINYINT(1)' },
+        sqlite: { id: 'INTEGER PRIMARY KEY AUTOINCREMENT', varchar: 'TEXT', timestamp: 'DATETIME', json: 'TEXT', boolean: 'INTEGER' },
+        mssql: { id: 'INT IDENTITY(1,1)', varchar: 'NVARCHAR', timestamp: 'DATETIME2', json: 'NVARCHAR(MAX)', boolean: 'BIT' }
+    };
+
+    const quotes = { postgres: (s) => `"${s}"`, mysql: (s) => `\`${s}\``, sqlite: (s) => `"${s}"`, mssql: (s) => `[${s}]` };
+    
+    const TEMPLATES = {
+        users: [
+            { name: 'id', type: 'id', length: '', pk: true, nn: true, def: '' },
+            { name: 'email', type: 'varchar', length: '255', pk: false, nn: true, def: '' },
+            { name: 'password_hash', type: 'varchar', length: '255', pk: false, nn: true, def: '' },
+            { name: 'created_at', type: 'timestamp', length: '', pk: false, nn: true, def: 'NOW' }
+        ],
+        orders: [
+            { name: 'id', type: 'id', length: '', pk: true, nn: true, def: '' },
+            { name: 'user_id', type: 'id', length: '', pk: false, nn: true, def: '' },
+            { name: 'amount', type: 'varchar', length: '50', pk: false, nn: true, def: '0.00' },
+            { name: 'status', type: 'varchar', length: '20', pk: false, nn: true, def: 'pending' }
+        ],
+        audit_log: [
+            { name: 'id', type: 'id', length: '', pk: true, nn: true, def: '' },
+            { name: 'action', type: 'varchar', length: '100', pk: false, nn: true, def: '' },
+            { name: 'payload', type: 'json', length: '', pk: false, nn: false, def: '' },
+            { name: 'created_at', type: 'timestamp', length: '', pk: false, nn: true, def: 'NOW' }
+        ]
+    };
+
+    function applyTemplate(key) {
+        // Correctly update the specific table in our state
+        state.tables[state.activeTableIndex].columns = JSON.parse(JSON.stringify(TEMPLATES[key]));
+        state.tables[state.activeTableIndex].name = key;
+        
+        // Refresh the UI
+        renderSidebar();
+        renderActiveTable();
+    }
+    
+    function createNewTable() {
+        state.tables.push({
+            name: 'new_table_' + state.tables.length,
+            columns: [{ name: 'id', type: 'id', length: '', pk: true, nn: true, def: '' }]
+        });
+        state.activeTableIndex = state.tables.length - 1;
+        renderSidebar();
+        renderActiveTable();
+    }
+
+    function switchTable(index) {
+        state.activeTableIndex = index;
+        renderSidebar();
+        renderActiveTable();
+    }
+
+    function updateTableName(val) {
+        state.tables[state.activeTableIndex].name = val;
+        renderSidebar();
+        generateSQL();
+    }
+
+    function renderSidebar() {
+        const list = document.getElementById('sidebarList');
+        list.innerHTML = '';
+        state.tables.forEach((t, i) => {
+            const li = document.createElement('li');
+            li.className = `table-item ${i === state.activeTableIndex ? 'active' : ''}`;
+            li.innerHTML = `<span>${t.name}</span><span onclick="deleteTable(${i}, event)" style="opacity:0.5; padding-left:10px;">✕</span>`;
+            li.onclick = () => switchTable(i);
+            list.appendChild(li);
+        });
+    }
+
+    function deleteTable(index, e) {
+        e.stopPropagation();
+        if (state.tables.length === 1) return;
+        state.tables.splice(index, 1);
+        state.activeTableIndex = 0;
+        renderSidebar();
+        renderActiveTable();
+    }
+
+    function renderActiveTable() {
+        const table = state.tables[state.activeTableIndex];
+        document.getElementById('tableName').value = table.name;
+        const body = document.getElementById('colBody');
+        body.innerHTML = '';
+        
+        table.columns.forEach((col, i) => {
+            let fkSelector = '';
+            if (col.type === 'fk') {
+                const otherTables = state.tables.map(t => t.name);
+                fkSelector = `
+                    <select style="width: 100%; margin-top: 5px; font-size: 0.7rem; border-color: var(--accent);" onchange="updateCol(${i}, 'refTable', this.value);">
+                        <option value="">Ref Table...</option>
+                        ${otherTables.map(t => `<option value="${t}" ${col.refTable === t ? 'selected' : ''}>${t}</option>`).join('')}
+                    </select>
+                `;
+            }
+
+            body.innerHTML += `
+                <tr>
+                    <td><input type="text" value="${col.name}" oninput="updateCol(${i}, 'name', this.value)"></td>
+                    <td>
+                        <select onchange="updateCol(${i}, 'type', this.value); renderActiveTable();">
+                            <option value="id" ${col.type==='id'?'selected':''}>ID</option>
+                            <option value="varchar" ${col.type==='varchar'?'selected':''}>Varchar</option>
+                            <option value="timestamp" ${col.type==='timestamp'?'selected':''}>Timestamp</option>
+                            <option value="json" ${col.type==='json'?'selected':''}>JSON</option>
+                            <option value="boolean" ${col.type==='boolean'?'selected':''}>Boolean</option>
+                            <option value="fk" ${col.type==='fk'?'selected':''}>Foreign Key</option>
+                        </select>
+                        ${fkSelector}
+                    </td>
+                    <td><input type="text" class="small-input" value="${col.length || ''}" oninput="updateCol(${i}, 'length', this.value)"></td>
+                    <td class="checkbox-cell"><input type="checkbox" ${col.pk?'checked':''} onchange="updateCol(${i}, 'pk', this.checked)"></td>
+                    <td class="checkbox-cell"><input type="checkbox" ${col.nn?'checked':''} onchange="updateCol(${i}, 'nn', this.checked)"></td>
+                    <td><input type="text" value="${col.def || ''}" placeholder="NULL" oninput="updateCol(${i}, 'def', this.value)"></td>
+                    <td><button class="btn-danger" onclick="removeRow(${i})">✕</button></td>
+                </tr>
+            `;
+        });
+        generateSQL(); 
+    }
+
+    function generateSQL() {
+        generateGlobalSQL(true); 
+    }
+
+    function updateCol(i, field, value) {
+        state.tables[state.activeTableIndex].columns[i][field] = value;
+        generateSQL();
+    }
+
+    function addRow() {
+        state.tables[state.activeTableIndex].columns.push({ name: 'new_col', type: 'varchar', length: '255', pk: false, nn: false, def: '' });
+        renderActiveTable();
+    }
+
+    function removeRow(i) {
+        state.tables[state.activeTableIndex].columns.splice(i, 1);
+        renderActiveTable();
+    }
+
+    function generateGlobalSQL(singleOnly = false) {
+        const dialect = document.getElementById('dialect').value;
+        const q = quotes[dialect];
+        const map = typeMap[dialect];
+        const isBP = document.getElementById('bestPractices').checked;
+
+        let sql = `-- Cyber Op Source: SQL Architect Export\n-- Dialect: ${dialect.toUpperCase()}\n\n`;
+
+        const tablesToProcess = singleOnly ? [state.tables[state.activeTableIndex]] : state.tables;
+
+        tablesToProcess.forEach(table => {
+            sql += `CREATE TABLE ${q(table.name)} (\n`;
+            let lines = table.columns.map(col => {
+                let type = (col.type === 'fk') ? (dialect === 'sqlite' ? 'INTEGER' : 'INT') : (map[col.type] || 'TEXT');
+                if (col.length && col.type === 'varchar') type += `(${col.length})`;
+                
+                if (dialect === 'sqlite' && col.type === 'id') return `  ${q(col.name)} ${map.id}`;
+                
+                let line = `  ${q(col.name)} ${type}`;
+                
+                if (col.pk) {
+                    if (dialect === 'postgres') line += " PRIMARY KEY " + map.id;
+                    else if (dialect === 'mysql') line += " PRIMARY KEY AUTO_INCREMENT";
+                    else line += " PRIMARY KEY";
+                }
+
+                if (col.nn && !col.pk) line += " NOT NULL";
+                
+                if (col.type === 'fk' && col.refTable) {
+                    line += ` REFERENCES ${q(col.refTable)}(id)`;
+                }
+
+                if (col.def) {
+                    let dVal = col.def.toUpperCase() === 'NOW' ? (dialect === 'mssql' ? 'GETDATE()' : 'CURRENT_TIMESTAMP') : `'${col.def}'`;
+                    line += ` DEFAULT ${dVal}`;
+                }
+                return line;
+            });
+
+            if (isBP && !table.columns.some(c => c.name === 'updated_at')) {
+                lines.push(`  ${q('updated_at')} ${map.timestamp || 'TIMESTAMP'} DEFAULT ${dialect === 'mssql' ? 'GETDATE()' : 'CURRENT_TIMESTAMP'}`);
+            }
+
+            sql += lines.join(",\n") + "\n);\n\n";
+        });
+
+        document.getElementById('sqlOutput').innerText = sql;
+    }
+
+    function copySQL() {
+        navigator.clipboard.writeText(document.getElementById('sqlOutput').innerText);
+        alert('SQL Copied');
+    }
+
+    function exportJSON() {
+        const blob = new Blob([JSON.stringify(state, null, 2)], {type: 'application/json'});
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `db_schema.json`;
+        a.click();
+    }
+
+    function importJSON(e) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            state = JSON.parse(event.target.result);
+            renderSidebar();
+            renderActiveTable();
+        };
+        reader.readAsText(e.target.files[0]);
+    }
+
+    renderSidebar();
+    renderActiveTable();
+	document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
